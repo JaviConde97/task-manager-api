@@ -7,7 +7,7 @@ Cada usuario gestiona únicamente sus propias tareas.
 
 ## Stack
 
-Java 21 · Spring Boot 3.5 · Spring Security · JWT · JPA/Hibernate · H2 · Maven
+Java 21 · Spring Boot 3.5 · Spring Security · JWT · JPA/Hibernate · H2 (dev) · PostgreSQL (prod) · Docker · Maven
 
 ---
 
@@ -18,6 +18,9 @@ Java 21 · Spring Boot 3.5 · Spring Security · JWT · JPA/Hibernate · H2 · M
 - Aislamiento de datos: cada usuario solo accede a sus propias tareas
 - Validación de campos en todas las peticiones
 - Manejo centralizado de errores con respuestas JSON limpias
+- Documentación interactiva con Swagger UI
+- Perfiles separados para desarrollo (H2) y producción (PostgreSQL)
+- Dockerizado con docker-compose
 
 ---
 
@@ -105,11 +108,10 @@ PUT /api/tareas/1
 
 ## Ejecución
 
-**Requisitos**
-- Java 21+
-- Maven 3.8+
+### Opción 1 — Local (modo desarrollo con H2)
 
-**Arranque**
+**Requisitos:** Java 21+, Maven 3.8+
+
 ```bash
 git clone https://github.com/JaviConde97/task-manager-api.git
 cd task-manager-api
@@ -118,21 +120,46 @@ cd task-manager-api
 
 La API arranca en `http://localhost:8080`.
 
+### Opción 2 — Docker (modo producción con PostgreSQL)
+
+**Requisitos:** Docker y Docker Compose
+
+```bash
+git clone https://github.com/JaviConde97/task-manager-api.git
+cd task-manager-api
+docker-compose up --build
+```
+
+La API arranca en `http://localhost:8080` con PostgreSQL como base de datos.
+
+---
+
+## Swagger UI
+
+Documentación interactiva disponible en `http://localhost:8080/swagger-ui.html`.
+
+Permite explorar y probar todos los endpoints directamente desde el navegador.
+Para los endpoints de tareas, haz clic en **Authorize** e introduce el token JWT obtenido en el login.
+
 ---
 
 ## Consola H2
 
-Disponible en `http://localhost:8080/h2-console` durante el desarrollo.
+Disponible en `http://localhost:8080/h2-console` (solo en modo desarrollo).
 
 - JDBC URL: `jdbc:h2:mem:taskmanagerdb`
 - Usuario: `sa` · Contraseña: *(vacía)*
 
 ---
 
-## Documentación técnica
+## Colección Postman
 
-Decisiones de arquitectura, orden de implementación y explicaciones del código en [`docs/desarrollo.md`](docs/desarrollo.md).
+Disponible en [`docs/postman_collection.json`](docs/postman_collection.json).
+
+Importa el archivo en Postman para tener todas las peticiones listas. El token JWT se guarda automáticamente al hacer login o registro.
 
 ---
 
-🚧 En desarrollo
+## Documentación técnica
+
+Decisiones de arquitectura, orden de implementación y explicaciones del código en [`docs/desarrollo.md`](docs/desarrollo.md).

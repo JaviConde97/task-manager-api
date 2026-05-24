@@ -1,0 +1,50 @@
+version: '3.8'
+
+# ==============================================
+# docker-compose para task-manager-api (perfil prod)
+# Levanta la API + PostgreSQL con un solo comando:
+#   docker-compose up --build
+# ==============================================
+
+services:
+
+  # Base de datos PostgreSQL
+  db:
+    image: postgres:16-alpine
+    container_name: taskmanager-db
+    environment:
+      POSTGRES_DB: taskmanagerdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # API Spring Boot
+  api:
+    build: .
+    container_name: taskmanager-api
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: taskmanagerdb
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      # En producción real, usar secretos de Docker o un gestor de secretos
+      JWT_SECRET: clave-secreta-muy-larga-que-debe-tener-al-menos-256-bits-para-HS256
+      JWT_EXPIRATION: 86400000
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
