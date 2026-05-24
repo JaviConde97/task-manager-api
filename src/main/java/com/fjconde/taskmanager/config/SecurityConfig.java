@@ -42,6 +42,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Estas rutas son públicas (registro y login)
                 .requestMatchers("/api/auth/**", "/h2-console/**").permitAll()
+                // Swagger UI y documentación OpenAPI también son públicos
+                .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                 // Todo lo demás requiere estar autenticado
                 .anyRequest().authenticated()
             )
