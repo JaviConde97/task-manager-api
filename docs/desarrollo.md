@@ -10,6 +10,7 @@ Cada fase documenta qué se construyó, qué archivos se tocaron y las decisione
 - [Stack y tecnologías](#stack-y-tecnologías)
 - [Fase 1 — Configuración inicial del proyecto](#fase-1--configuración-inicial-del-proyecto)
 - [Fase 2 — Autenticación JWT](#fase-2--autenticación-jwt)
+- [Fase 3 — Tests unitarios](#fase-3--tests-unitarios)
 - [Cosas a tener en cuenta](#cosas-a-tener-en-cuenta)
 
 ---
@@ -209,6 +210,54 @@ git push origin feature/auth
 
 ---
 
+## Fase 3 — Tests unitarios
+
+**Rama:** `feature/tests`  
+**Commit:** `test: tests unitarios de AuthService, TareaService y JwtService`
+
+### Qué se hizo
+
+Implementación de 15 tests unitarios con JUnit 5 y Mockito cubriendo los tres componentes con más lógica del proyecto.
+
+### Archivos creados
+
+| Archivo | Tests | Qué cubre |
+|---------|-------|-----------|
+| `test/service/AuthServiceTest.java` | 4 | Registro exitoso, email duplicado, login, encriptación de password |
+| `test/service/TareaServiceTest.java` | 6 | Listar, crear, actualizar, eliminar tareas e intentos de acceso a tareas ajenas |
+| `test/security/JwtServiceTest.java` | 4 | Generación de token, extracción de email, validación de token propio y ajeno |
+
+### Resultado
+
+```
+Tests run: 15, Failures: 0, Errors: 0, Skipped: 0 — BUILD SUCCESS
+```
+
+### Enfoque de los tests
+
+**Qué se testea y por qué:**
+- `AuthService` — lógica de negocio crítica: registro, login y seguridad de contraseñas
+- `TareaService` — aislamiento de datos por usuario (que un usuario no acceda a tareas de otro)
+- `JwtService` — generación y validación de tokens, que el token de un usuario no valide para otro
+
+**Por qué Mockito:**  
+Los tests unitarios no deben tocar la base de datos ni el contexto de Spring. Mockito reemplaza los repositorios y servicios con objetos simulados, aislando la lógica que se quiere probar. Más rápidos, más fiables y sin dependencias externas.
+
+**`ReflectionTestUtils` en JwtServiceTest:**  
+`JwtService` lee el secreto y la expiración de `application.properties` con `@Value`. En los tests no hay contexto de Spring, así que se inyectan esos valores directamente con `ReflectionTestUtils.setField()`.
+
+### Comandos Git
+
+```bash
+git checkout develop
+git checkout -b feature/tests
+git add .
+git commit -m "test: tests unitarios de AuthService, TareaService y JwtService"
+git push origin feature/tests
+```
+
+---
+
 ## Cosas a tener en cuenta
 
 Detalles del código que no son obvios a primera vista pero son importantes.
@@ -233,4 +282,4 @@ La clave en `application.properties` es un placeholder. En producción iría en 
 
 ---
 
-*Próxima fase: tests unitarios con JUnit y Mockito*
+*Próxima fase: por definir*
