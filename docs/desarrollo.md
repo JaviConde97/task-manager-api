@@ -26,6 +26,9 @@ Cada fase documenta qué se construyó, qué archivos se tocaron y las decisione
 | Spring Security + JWT | 6.x / jjwt 0.12.6 | Estándar del sector para APIs REST sin estado |
 | Spring Data JPA | incluido en Boot | Evita escribir SQL repetitivo, gestiona las relaciones entre entidades automáticamente |
 | H2 Database | incluido en Boot | Base de datos en memoria para desarrollo, sin instalar nada extra |
+| PostgreSQL | 16 | Base de datos relacional para el perfil de producción |
+| springdoc-openapi | 2.8.3 | Genera la especificación OpenAPI y la UI de Swagger automáticamente |
+| Docker + Compose | latest | Containerización del stack completo (API + PostgreSQL) |
 | Lombok | incluido en Boot | Elimina código boilerplate: getters, setters, constructores, builders |
 | Maven | 3.8+ | Gestor de dependencias estándar en entornos enterprise |
 
@@ -304,8 +307,8 @@ El esquema `bearerAuth` definido en `OpenApiConfig` añade el botón **Authorize
 
 ## Fase 5 — Perfiles Spring y Docker
 
-**Rama:** `feature/docker`  
-**Commit:** `feat: perfiles Spring dev/prod, PostgreSQL y Docker`
+**Rama:** `feature/swagger` (incluida en el mismo commit que la Fase 4)  
+**Commit:** `feat: Swagger UI, validaciones, perfiles dev/prod y Docker`
 
 ### Qué se hizo
 
