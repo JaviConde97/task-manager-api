@@ -1,113 +1,138 @@
 # Task Manager API
 
-API REST de gestión de tareas con autenticación JWT, construida con Spring Boot 3 y Java 21.
-
-Cada usuario solo puede ver y gestionar sus propias tareas. La autenticación está basada en tokens JWT con Spring Security.
+API REST para gestión de tareas con autenticación JWT.
+Cada usuario gestiona únicamente sus propias tareas.
 
 ---
 
-## Tecnologías
+## Stack
 
-- Java 21
-- Spring Boot 3.5
-- Spring Security + JWT (jjwt 0.12)
-- Spring Data JPA + Hibernate
-- H2 Database (desarrollo)
-- Lombok
-- Maven
+Java 21 · Spring Boot 3.5 · Spring Security · JWT · JPA/Hibernate · H2 · Maven
 
 ---
 
 ## Funcionalidades
 
-- Registro e inicio de sesión de usuarios
-- Generación y validación de tokens JWT
+- Registro e inicio de sesión con token JWT
 - CRUD completo de tareas por usuario autenticado
-- Cada usuario solo accede a sus propias tareas
-- Manejo centralizado de excepciones
+- Aislamiento de datos: cada usuario solo accede a sus propias tareas
+- Validación de campos en todas las peticiones
+- Manejo centralizado de errores con respuestas JSON limpias
 
 ---
 
-## Estructura del proyecto
+## Estructura
 
 ```
 src/main/java/com/fjconde/taskmanager/
-├── config/          # Configuración de seguridad
-├── controller/      # Endpoints REST (auth y tareas)
-├── dto/             # Objetos de transferencia de datos
+├── config/
+├── controller/
+├── dto/
 │   ├── auth/
 │   └── tarea/
-├── entity/          # Entidades JPA (Usuario, Tarea)
-├── exception/       # Manejo global de errores
-├── repository/      # Repositorios JPA
-├── security/        # Filtro JWT y servicio de tokens
-└── service/         # Lógica de negocio
+├── entity/
+├── exception/
+├── repository/
+├── security/
+└── service/
 ```
 
 ---
 
 ## Endpoints
 
-### Autenticación
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | `/api/auth/registro` | Registrar nuevo usuario |
-| POST | `/api/auth/login` | Iniciar sesión, devuelve JWT |
+### Autenticación (públicos)
 
-### Tareas (requieren JWT)
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| POST | `/api/auth/registro` | Registrar nuevo usuario |
+| POST | `/api/auth/login` | Iniciar sesión → devuelve token JWT |
+
+### Tareas (requieren token JWT)
+
+| Método | Ruta | Descripción |
+|--------|------|-------------|
 | GET | `/api/tareas` | Listar tareas del usuario |
-| POST | `/api/tareas` | Crear nueva tarea |
+| POST | `/api/tareas` | Crear tarea |
 | PUT | `/api/tareas/{id}` | Actualizar tarea |
 | DELETE | `/api/tareas/{id}` | Eliminar tarea |
 
 ---
 
-## Cómo ejecutar
+## Uso
 
-### Requisitos
-- Java 21
+**1. Registro:**
+```json
+POST /api/auth/registro
+{
+  "nombre": "Javi",
+  "email": "javi@example.com",
+  "password": "12345678"
+}
+```
+
+**2. Login** → devuelve el token:
+```json
+POST /api/auth/login
+→ { "token": "eyJhbGci..." }
+```
+
+**3. Usar el token** en el header de cada petición:
+```
+Authorization: Bearer <token>
+```
+
+**4. Crear tarea:**
+```json
+POST /api/tareas
+{
+  "titulo": "Estudiar Spring Security",
+  "descripcion": "Repasar filtros y JWT"
+}
+```
+
+**5. Actualizar tarea:**
+```json
+PUT /api/tareas/1
+{
+  "titulo": "Estudiar Spring Security",
+  "descripcion": "Repasar filtros y JWT",
+  "completada": true
+}
+```
+
+---
+
+## Ejecución
+
+**Requisitos**
+- Java 21+
 - Maven 3.8+
 
-### Pasos
-
+**Arranque**
 ```bash
-# Clonar el repositorio
 git clone https://github.com/JaviConde97/task-manager-api.git
 cd task-manager-api
-
-# Ejecutar
 ./mvnw spring-boot:run
 ```
 
 La API arranca en `http://localhost:8080`.
-La consola H2 está disponible en `http://localhost:8080/h2-console`.
 
 ---
 
-## Ejemplo de uso
+## Consola H2
 
-**Registro:**
-```bash
-curl -X POST http://localhost:8080/api/auth/registro \
-  -H "Content-Type: application/json" \
-  -d '{"nombre": "Javi", "email": "javi@example.com", "password": "12345678"}'
-```
+Disponible en `http://localhost:8080/h2-console` durante el desarrollo.
 
-**Login y uso del token:**
-```bash
-curl -X POST http://localhost:8080/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email": "javi@example.com", "password": "12345678"}'
-
-# Usar el token devuelto:
-curl http://localhost:8080/api/tareas \
-  -H "Authorization: Bearer <token>"
-```
+- JDBC URL: `jdbc:h2:mem:taskmanagerdb`
+- Usuario: `sa` · Contraseña: *(vacía)*
 
 ---
 
-## Estado del proyecto
+## Documentación técnica
+
+Decisiones de arquitectura, orden de implementación y explicaciones del código en [`docs/desarrollo.md`](docs/desarrollo.md).
+
+---
 
 🚧 En desarrollo
